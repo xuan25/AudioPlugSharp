@@ -28,6 +28,9 @@ namespace AudioPlugSharp
         public double DefaultValue { get; set; }
         public string ValueFormat { get; set; }
 
+        public delegate void ValueChangedHandler(AudioPluginParameter sender);
+        public event ValueChangedHandler ValueChanged;
+
         public double Value
         {
             get { return value; }
@@ -37,8 +40,7 @@ namespace AudioPlugSharp
                 {
                     this.value = value;
 
-                    if (ValueChanged != null)
-                        ValueChanged(value);
+                    ValueChanged?.Invoke(this);
 
                     OnPropertyChanged("Value");
                     OnPropertyChanged("EditValue");
@@ -66,7 +68,6 @@ namespace AudioPlugSharp
             }
         }
 
-        public Action<double> ValueChanged { get; set; }
         public string DisplayValue { get { return String.Format(ValueFormat, Value); } }
 
         public double NormalizedValue
